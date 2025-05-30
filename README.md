@@ -24,6 +24,9 @@ A web application for tracking monthly household expenses including utilities, c
 - Monthly expense tracking by year/month
 - Stored calculations for historical reference
 - Simple and intuitive interface
+- Comprehensive input validation
+- Detailed error messages
+- RESTful API with full CRUD operations
 
 ## Tech Stack
 
@@ -32,6 +35,7 @@ A web application for tracking monthly household expenses including utilities, c
 - Node.js
 - Express
 - SQLite with Sequelize ORM
+- Express Validator for input validation
 - CORS for cross-origin requests
 
 ### Frontend (Coming soon)
@@ -49,8 +53,14 @@ sqlite-version/
 │   │   └── database.js      # Database configuration
 │   ├── models/
 │   │   └── Expense.js      # Expense model definition
-│   ├── server.js           # Express server setup
-│   └── package.json        # Backend dependencies
+│   ├── middleware/
+│   │   ├── expenseValidation.js  # Input validation
+│   │   └── errorHandler.js       # Error handling
+│   ├── routes/
+│   │   └── expenses.js     # API routes
+│   ├── API.md             # API documentation
+│   ├── server.js          # Express server setup
+│   └── package.json       # Backend dependencies
 ├── frontend/              # Coming soon
 └── README.md
 ```
@@ -77,6 +87,24 @@ The application uses SQLite with the following schema for expenses:
 | createdAt       | DATETIME      | Record creation timestamp            |
 | updatedAt       | DATETIME      | Record update timestamp              |
 
+## API Features
+
+- Full CRUD operations for expenses
+- Input validation:
+  - Date format validation (YYYY-MM)
+  - Numeric field validation
+  - Required fields checking
+- Error handling:
+  - Structured error responses
+  - Field-specific error messages
+  - Different error types (validation, database, server)
+- Automatic calculations:
+  - Total expense calculation
+  - Amount to pay tracking
+- Monthly filtering
+
+For detailed API documentation, see [backend/API.md](backend/API.md)
+
 ## Setup
 
 1. Clone the repository
@@ -93,18 +121,24 @@ cd backend
 npm install
 ```
 
-3. Start the server (command coming soon)
+3. Start the server
 
 ```bash
-npm start
+cd backend
+node server.js
 ```
+
+The server will start on port 5001 by default.
 
 ## Development Status
 
 - [x] Project structure setup
 - [x] Database configuration
 - [x] Expense model implementation
-- [ ] API routes implementation
+- [x] API routes implementation
+- [x] Input validation
+- [x] Error handling
+- [x] API documentation
 - [ ] Frontend development
 - [ ] Testing
 - [ ] Deployment
