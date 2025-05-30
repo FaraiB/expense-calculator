@@ -2,6 +2,12 @@
 
 A web application for tracking monthly household expenses including utilities, condominium fees, and other regular bills.
 
+## Development Environment
+
+- macOS
+- Node.js
+- SQLite
+
 ## Features
 
 - Track monthly expenses by category:
