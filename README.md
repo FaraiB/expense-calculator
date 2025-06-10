@@ -1,6 +1,6 @@
 # Expense Calculator
 
-A web application for tracking monthly household expenses including utilities, condominium fees, and other regular bills.
+A web application for tracking monthly household expenses including utilities, condominium fees, and other regular bills. The application automatically calculates the amount to pay based on a specific formula: (total of all expenses except condomínio / 2) - condomínio.
 
 ## Development Environment
 
@@ -20,13 +20,16 @@ A web application for tracking monthly household expenses including utilities, c
   - Celular (Mobile Phone)
   - Credit Card
 
-- Automatic total calculation
+- Automatic calculations:
+  - Total of all expenses
+  - Amount to pay calculation: (total except condomínio / 2) - condomínio
 - Monthly expense tracking by year/month
 - Stored calculations for historical reference
 - Simple and intuitive interface
 - Comprehensive input validation
 - Detailed error messages
 - RESTful API with full CRUD operations
+- Modern, responsive UI with Material-UI components
 
 ## Tech Stack
 
@@ -38,11 +41,14 @@ A web application for tracking monthly household expenses including utilities, c
 - Express Validator for input validation
 - CORS for cross-origin requests
 
-### Frontend (Coming soon)
+### Frontend
 
-- React
-- Modern UI components
-- Form handling
+- React with TypeScript
+- Material-UI (MUI) components
+- Date-fns for date handling
+- Form handling with controlled components
+- Brazilian Real (R$) currency formatting
+- Light/Dark theme support
 
 ## Project Structure
 
@@ -61,7 +67,13 @@ sqlite-version/
 │   ├── API.md             # API documentation
 │   ├── server.js          # Express server setup
 │   └── package.json       # Backend dependencies
-├── frontend/              # Coming soon
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── ExpenseForm.tsx   # Main expense form
+│   │   │   └── ExpenseList.tsx   # Expense history display
+│   │   └── App.tsx              # Main application component
+│   └── package.json            # Frontend dependencies
 └── README.md
 ```
 
@@ -114,21 +126,25 @@ git clone git@github.com:FaraiB/expense-calculator.git
 cd expense-calculator/sqlite-version
 ```
 
-2. Install backend dependencies
+2. Install backend dependencies and start the server
 
 ```bash
 cd backend
 npm install
-```
-
-3. Start the server
-
-```bash
-cd backend
 node server.js
 ```
 
 The server will start on port 5001 by default.
+
+3. Install frontend dependencies and start the development server
+
+```bash
+cd ../frontend
+npm install
+npm run dev
+```
+
+The frontend development server will start and the application will be available in your browser.
 
 ## Development Status
 
@@ -139,7 +155,12 @@ The server will start on port 5001 by default.
 - [x] Input validation
 - [x] Error handling
 - [x] API documentation
-- [ ] Frontend development
+- [x] Frontend development
+  - [x] Expense form implementation
+  - [x] Amount calculation
+  - [x] Expense list with edit/delete
+  - [x] Currency formatting
+  - [x] Date handling
 - [ ] Testing
 - [ ] Deployment
 
