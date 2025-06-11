@@ -1,5 +1,7 @@
 # Expense Calculator
 
+![Monthly Expense Calculator](docs/screenshots/calculator.png)
+
 A web application for tracking monthly household expenses including utilities, condominium fees, and other regular bills. The application automatically calculates the amount to pay based on a specific formula: (total of all expenses except condomínio / 2) - condomínio.
 
 ## Development Environment
