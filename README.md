@@ -22,6 +22,20 @@ A web application for tracking monthly household expenses including utilities, c
   - Celular (Mobile Phone)
   - Credit Card
 
+- **Data Persistence**:
+
+  - SQLite database storage for all expense data
+  - Automatic data synchronization with backend API
+  - Persistent storage between sessions and server restarts
+  - Real-time data updates with loading states
+
+- **PDF Export Functionality**:
+
+  - Download complete expense reports as PDF
+  - Individual expense detail PDFs
+  - Professional formatting with Brazilian Real currency
+  - Automatic file naming with timestamps
+
 - Automatic calculations:
   - Total of all expenses
   - Amount to pay calculation: (total except condomínio / 2) - condomínio
@@ -51,6 +65,8 @@ A web application for tracking monthly household expenses including utilities, c
 - Form handling with controlled components
 - Brazilian Real (R$) currency formatting
 - Light/Dark theme support
+- jsPDF for PDF generation
+- jsPDF-AutoTable for professional table formatting
 
 ## Project Structure
 
@@ -66,6 +82,7 @@ sqlite-version/
 │   │   └── errorHandler.js       # Error handling
 │   ├── routes/
 │   │   └── expenses.js     # API routes
+│   ├── database.sqlite     # SQLite database file
 │   ├── API.md             # API documentation
 │   ├── server.js          # Express server setup
 │   └── package.json       # Backend dependencies
@@ -74,8 +91,11 @@ sqlite-version/
 │   │   ├── components/
 │   │   │   ├── ExpenseForm.tsx   # Main expense form
 │   │   │   └── ExpenseList.tsx   # Expense history display
+│   │   ├── utils/
+│   │   │   └── pdfGenerator.ts   # PDF generation utilities
 │   │   └── App.tsx              # Main application component
 │   └── package.json            # Frontend dependencies
+├── FEATURES.md              # New features documentation
 └── README.md
 ```
 
@@ -148,6 +168,20 @@ npm run dev
 
 The frontend development server will start and the application will be available in your browser.
 
+## Usage
+
+### Data Persistence
+
+- All expense calculations are automatically saved to the SQLite database
+- Data persists between sessions and server restarts
+- Real-time synchronization with the backend API
+
+### PDF Downloads
+
+- **Complete Report**: Click "Download All as PDF" to generate a comprehensive report of all expenses
+- **Individual Report**: Click the download icon (📥) next to any expense to get a detailed report
+- PDFs are automatically named with timestamps and downloaded to your default downloads folder
+
 ## Development Status
 
 - [x] Project structure setup
@@ -163,6 +197,8 @@ The frontend development server will start and the application will be available
   - [x] Expense list with edit/delete
   - [x] Currency formatting
   - [x] Date handling
+- [x] Data persistence with SQLite
+- [x] PDF export functionality
 - [ ] Testing
 - [ ] Deployment
 

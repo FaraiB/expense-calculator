@@ -1,8 +1,16 @@
 import { useState } from "react";
-import { Box, Button, TextField, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Grid,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 
 export interface ExpenseFormData {
+  id?: number;
   date: Date;
   condominio: number;
   planoSaude: number;
@@ -17,6 +25,7 @@ export interface ExpenseFormData {
 interface ExpenseFormProps {
   onSubmit: (data: ExpenseFormData) => void;
   initialData?: ExpenseFormData;
+  loading?: boolean;
 }
 
 const formatAmount = (value: number): string => {
@@ -36,7 +45,11 @@ const EXPENSE_FIELDS = [
   { key: "creditCard", label: "Cartão de Crédito" },
 ] as const;
 
-export function ExpenseForm({ onSubmit, initialData }: ExpenseFormProps) {
+export function ExpenseForm({
+  onSubmit,
+  initialData,
+  loading,
+}: ExpenseFormProps) {
   const [formData, setFormData] = useState<ExpenseFormData>(
     initialData || {
       date: new Date(),
@@ -219,6 +232,12 @@ export function ExpenseForm({ onSubmit, initialData }: ExpenseFormProps) {
             color="primary"
             fullWidth
             size="large"
+            disabled={loading}
+            startIcon={
+              loading ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : undefined
+            }
           >
             {initialData ? "Update Calculation" : "Calculate Expenses"}
           </Button>
