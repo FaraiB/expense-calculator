@@ -49,6 +49,11 @@ const expenseValidationRules = () => {
   ];
 };
 
+// Validation rules for ID-only operations (GET, DELETE)
+const idValidationRules = () => {
+  return [param("id").isInt({ min: 1 }).withMessage("Invalid ID parameter")];
+};
+
 // Middleware to handle validation errors
 const validateExpense = (req, res, next) => {
   const errors = validationResult(req);
@@ -73,5 +78,6 @@ const validateExpense = (req, res, next) => {
 
 module.exports = {
   expenseValidationRules,
+  idValidationRules,
   validateExpense,
 };

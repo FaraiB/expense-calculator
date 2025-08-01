@@ -4,6 +4,7 @@ const { Op } = require("sequelize");
 const Expense = require("../models/Expense");
 const {
   expenseValidationRules,
+  idValidationRules,
   validateExpense,
 } = require("../middleware/expenseValidation");
 
@@ -22,7 +23,7 @@ router.get("/", async (req, res, next) => {
 // GET expense by ID
 router.get(
   "/:id",
-  expenseValidationRules(),
+  idValidationRules(),
   validateExpense,
   async (req, res, next) => {
     try {
@@ -95,7 +96,7 @@ router.put(
 // DELETE expense
 router.delete(
   "/:id",
-  expenseValidationRules(),
+  idValidationRules(),
   validateExpense,
   async (req, res, next) => {
     try {

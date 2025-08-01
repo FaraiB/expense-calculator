@@ -199,8 +199,39 @@ The frontend development server will start and the application will be available
   - [x] Date handling
 - [x] Data persistence with SQLite
 - [x] PDF export functionality
-- [ ] Testing
+- [x] Testing
+  - [x] Backend API tests (15 tests passing)
+  - [x] Frontend component tests (basic setup)
 - [ ] Deployment
+
+## Testing
+
+The application includes comprehensive testing for both backend and frontend.
+
+### Backend Tests
+
+```bash
+cd backend
+npm test                    # Run all tests
+npm run test:watch         # Run tests in watch mode
+npm run test:coverage      # Run tests with coverage report
+```
+
+### Frontend Tests
+
+```bash
+cd frontend
+npm test                   # Run all tests
+npm run test:watch         # Run tests in watch mode
+npm run test:coverage      # Run tests with coverage report
+```
+
+### Test Coverage
+
+- **Backend**: 15 tests covering all API endpoints, validation, and calculations
+- **Frontend**: Component tests for form functionality and user interactions
+
+For detailed testing information, see [TESTING.md](TESTING.md).
 
 ## Contributing
 
