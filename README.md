@@ -12,7 +12,7 @@ A web application for tracking monthly household expenses including utilities, c
 
 ## Features
 
-- Track monthly expenses by category:
+- **Track monthly expenses by category**:
 
   - Condomínio (Condominium fees)
   - Plano de Saúde (Health Insurance)
@@ -22,12 +22,25 @@ A web application for tracking monthly household expenses including utilities, c
   - Celular (Mobile Phone)
   - Credit Card
 
+- **Receipt Management**:
+
+  - Upload receipts for each expense category (optional)
+  - Support for both image files (JPG, PNG, etc.) and PDF documents
+  - Maximum file size: 5MB per receipt
+  - Receipt preview modal with full-screen viewing
+  - Download receipts individually
+  - Delete receipts with confirmation
+  - Upload new receipts to overwrite existing ones
+  - Receipt icons displayed next to expense amounts in the list
+  - All receipt operations available directly from the expense list
+
 - **Data Persistence**:
 
   - SQLite database storage for all expense data
   - Automatic data synchronization with backend API
   - Persistent storage between sessions and server restarts
   - Real-time data updates with loading states
+  - Receipts stored as base64 data URLs
 
 - **PDF Export Functionality**:
 
@@ -36,16 +49,20 @@ A web application for tracking monthly household expenses including utilities, c
   - Professional formatting with Brazilian Real currency
   - Automatic file naming with timestamps
 
-- Automatic calculations:
+- **Automatic calculations**:
   - Total of all expenses
   - Amount to pay calculation: (total except condomínio / 2) - condomínio
-- Monthly expense tracking by year/month
-- Stored calculations for historical reference
-- Simple and intuitive interface
-- Comprehensive input validation
-- Detailed error messages
-- RESTful API with full CRUD operations
-- Modern, responsive UI with Material-UI components
+
+- **User Experience**:
+  - Monthly expense tracking by year/month
+  - Stored calculations for historical reference
+  - Simple and intuitive interface
+  - Comprehensive input validation
+  - Detailed error messages
+  - Tooltips on all action buttons for clarity
+  - Edit and update expenses with proper duplicate prevention
+  - Modern, responsive UI with Material-UI components
+  - RESTful API with full CRUD operations
 
 ## Tech Stack
 
@@ -89,13 +106,16 @@ sqlite-version/
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── ExpenseForm.tsx   # Main expense form
-│   │   │   └── ExpenseList.tsx   # Expense history display
+│   │   │   ├── ExpenseForm.tsx   # Main expense form with receipt upload
+│   │   │   └── ExpenseList.tsx   # Expense history display with receipt management
+│   │   ├── pages/
+│   │   │   └── ExpenseDashboard.tsx  # Main dashboard page
 │   │   ├── utils/
 │   │   │   └── pdfGenerator.ts   # PDF generation utilities
 │   │   └── App.tsx              # Main application component
 │   └── package.json            # Frontend dependencies
 ├── FEATURES.md              # New features documentation
+├── CHANGELOG_TODAY.md        # Today's changes documentation
 └── README.md
 ```
 
@@ -182,6 +202,28 @@ The frontend development server will start and the application will be available
 - **Individual Report**: Click the download icon (📥) next to any expense to get a detailed report
 - PDFs are automatically named with timestamps and downloaded to your default downloads folder
 
+### Receipt Management
+
+- **Upload Receipts**: 
+  - Click "Upload Receipt" button below any expense category in the form
+  - Upload image files (JPG, PNG, GIF, etc.) or PDF documents
+  - Maximum file size: 5MB per receipt
+  - Receipts are optional - you can save expenses without uploading receipts
+
+- **View Receipts**:
+  - Click the receipt icon (📄) next to any expense amount that has a receipt
+  - Opens a modal with full-screen preview of the receipt
+  - Supports both image and PDF viewing
+
+- **Manage Receipts** (from the receipt modal):
+  - **Download**: Save the receipt to your device with a descriptive filename
+  - **Delete**: Remove the receipt from the expense (with confirmation)
+  - **Upload New**: Replace the existing receipt with a new one
+
+- **Receipt Indicators**:
+  - Green receipt icons appear next to expense amounts that have receipts attached
+  - Hover over icons to see tooltips indicating which category the receipt belongs to
+
 ## Development Status
 
 - [x] Project structure setup
@@ -197,8 +239,14 @@ The frontend development server will start and the application will be available
   - [x] Expense list with edit/delete
   - [x] Currency formatting
   - [x] Date handling
+  - [x] Receipt upload functionality
+  - [x] Receipt management (download, delete, upload new)
+  - [x] Receipt preview modal
+  - [x] Tooltips for all action buttons
+  - [x] Duplicate expense prevention on edit
 - [x] Data persistence with SQLite
 - [x] PDF export functionality
+- [x] Receipt storage (base64 data URLs)
 - [x] Testing
   - [x] Backend API tests (15 tests passing)
   - [x] Frontend component tests (basic setup)

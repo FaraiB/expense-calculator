@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Box,
   Button,
@@ -6,7 +6,15 @@ import {
   Grid,
   Typography,
   CircularProgress,
+  IconButton,
+  Paper,
+  Stack,
 } from "@mui/material";
+import {
+  AttachFile as AttachFileIcon,
+  Close as CloseIcon,
+  Image as ImageIcon,
+} from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 
 export interface ExpenseFormData {
@@ -20,6 +28,15 @@ export interface ExpenseFormData {
   celular: number;
   creditCard: number;
   amountToPay: number;
+  receipts?: {
+    condominio?: string; // base64 data URL (image or PDF)
+    planoSaude?: string;
+    eletricidade?: string;
+    gas?: string;
+    internet?: string;
+    celular?: string;
+    creditCard?: string;
+  };
 }
 
 interface ExpenseFormProps {
@@ -61,6 +78,7 @@ export function ExpenseForm({
       celular: 0,
       creditCard: 0,
       amountToPay: 0,
+      receipts: {},
     }
   );
 
@@ -77,6 +95,55 @@ export function ExpenseForm({
   );
 
   const [calculatedAmount, setCalculatedAmount] = useState<number | null>(null);
+  const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+
+  // Update form data when initialData changes (when editing)
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+      setDisplayAmounts(
+        EXPENSE_FIELDS.reduce(
+          (acc, field) => ({
+            ...acc,
+            [field.key]: formatAmount(initialData[field.key]),
+          }),
+          {}
+        )
+      );
+      setCalculatedAmount(initialData.amountToPay);
+    } else {
+      // Reset form when not editing
+      const resetData = {
+        date: new Date(),
+        condominio: 0,
+        planoSaude: 0,
+        eletricidade: 0,
+        gas: 0,
+        internet: 0,
+        celular: 0,
+        creditCard: 0,
+        amountToPay: 0,
+        receipts: {},
+      };
+      setFormData(resetData);
+      setDisplayAmounts(
+        EXPENSE_FIELDS.reduce(
+          (acc, field) => ({
+            ...acc,
+            [field.key]: "0,00",
+          }),
+          {}
+        )
+      );
+      setCalculatedAmount(null);
+      // Reset file inputs
+      Object.keys(fileInputRefs.current).forEach((key) => {
+        if (fileInputRefs.current[key]) {
+          fileInputRefs.current[key]!.value = "";
+        }
+      });
+    }
+  }, [initialData]);
 
   // Calculate total for display
   const total = Object.values(formData)
@@ -124,7 +191,58 @@ export function ExpenseForm({
     onSubmit({
       ...formData,
       amountToPay: amountToPay,
+      receipts: formData.receipts || {},
     });
+  };
+
+  const handleFileUpload = (field: string) => (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type (images or PDFs)
+    const isImage = file.type.startsWith("image/");
+    const isPDF = file.type === "application/pdf";
+    
+    if (!isImage && !isPDF) {
+      alert("Please upload an image file (JPG, PNG, etc.) or PDF");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File size must be less than 5MB");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      setFormData((prev) => ({
+        ...prev,
+        receipts: {
+          ...prev.receipts,
+          [field]: base64String,
+        },
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveReceipt = (field: string) => () => {
+    setFormData((prev) => {
+      const newReceipts = { ...prev.receipts };
+      delete newReceipts?.[field as keyof typeof newReceipts];
+      return {
+        ...prev,
+        receipts: newReceipts,
+      };
+    });
+    // Reset file input
+    if (fileInputRefs.current[field]) {
+      fileInputRefs.current[field]!.value = "";
+    }
   };
 
   const handleClear = () => {
@@ -138,6 +256,7 @@ export function ExpenseForm({
       celular: 0,
       creditCard: 0,
       amountToPay: 0,
+      receipts: {},
     };
 
     const resetAmounts = EXPENSE_FIELDS.reduce(
@@ -151,6 +270,12 @@ export function ExpenseForm({
     setFormData(resetData);
     setDisplayAmounts(resetAmounts);
     setCalculatedAmount(null);
+    // Reset all file inputs
+    Object.keys(fileInputRefs.current).forEach((key) => {
+      if (fileInputRefs.current[key]) {
+        fileInputRefs.current[key]!.value = "";
+      }
+    });
   };
 
   return (
@@ -200,20 +325,71 @@ export function ExpenseForm({
 
         {EXPENSE_FIELDS.map((field) => (
           <Grid item xs={12} sm={6} key={field.key}>
-            <TextField
-              fullWidth
-              label={field.label}
-              value={displayAmounts[field.key]}
-              onChange={handleAmountChange(field.key)}
-              required
-              inputProps={{
-                inputMode: "numeric",
-                style: { textAlign: "right" },
-              }}
-              InputProps={{
-                startAdornment: <span>R$</span>,
-              }}
-            />
+            <Box>
+              <TextField
+                fullWidth
+                label={field.label}
+                value={displayAmounts[field.key]}
+                onChange={handleAmountChange(field.key)}
+                required
+                inputProps={{
+                  inputMode: "numeric",
+                  style: { textAlign: "right" },
+                }}
+                InputProps={{
+                  startAdornment: <span>R$</span>,
+                }}
+              />
+              <Box sx={{ mt: 1 }}>
+                <input
+                  accept="image/*,application/pdf"
+                  style={{ display: "none" }}
+                  id={`receipt-upload-${field.key}`}
+                  type="file"
+                  onChange={handleFileUpload(field.key)}
+                  ref={(el) => {
+                    fileInputRefs.current[field.key] = el;
+                  }}
+                />
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <label htmlFor={`receipt-upload-${field.key}`}>
+                    <Button
+                      component="span"
+                      size="small"
+                      variant="outlined"
+                      startIcon={<AttachFileIcon />}
+                      sx={{ fontSize: "0.75rem" }}
+                    >
+                      Upload Receipt
+                    </Button>
+                  </label>
+                  {formData.receipts?.[field.key as keyof typeof formData.receipts] && (
+                    <Paper
+                      elevation={1}
+                      sx={{
+                        p: 0.5,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 0.5,
+                        flex: 1,
+                      }}
+                    >
+                      <ImageIcon sx={{ fontSize: 16, color: "success.main" }} />
+                      <Typography variant="caption" sx={{ flex: 1 }}>
+                        Receipt uploaded
+                      </Typography>
+                      <IconButton
+                        size="small"
+                        onClick={handleRemoveReceipt(field.key)}
+                        sx={{ p: 0.25 }}
+                      >
+                        <CloseIcon sx={{ fontSize: 16 }} />
+                      </IconButton>
+                    </Paper>
+                  )}
+                </Stack>
+              </Box>
+            </Box>
           </Grid>
         ))}
 
